@@ -5,3 +5,5 @@ bzz自动兑换支票程序。[下载地址](https://github.com/muzexi3000/swarm
 * 导出Excel
 
 ![截图](https://github.com/muzexi3000/swarmdog/raw/master/doc/swarmdog.png)
+
+![联系作者](https://github.com/muzexi3000/swarmdog/raw/master/doc/wx.jpg)
