@@ -93,18 +93,18 @@ namespace SwarmDog
                  while (!cancellationToken.IsCancellationRequested)
                  {
                      IntervalAction();
-                     this.BeginInvoke(new Action(() =>
+                     this.Invoke(new Action(() =>
                      {
                          this.bsNode.ResetBindings(false);
                          this.tslSummary.Text =
-                         $"当前合计：{data.Nodes.Count}个bee节点,{data.Nodes.Sum(c => c.Peers.Count)}个链接节点,{data.Nodes.Sum(c => c.ChequePeers.Count) }个交互节点,{data.Nodes.Sum(c => c.SentChequeCount)}个发送支票,{ data.Nodes.Sum(c => c.ReceivedChequeCount)}个接收支票,未兑换金额:{data.Nodes.Sum(c => c.TotalUncashedAmount).ToString("N0")}";
+                         $"当前合计：{data.Nodes.Count}个bee节点,{data.Nodes.Sum(c => c.Peers.Count)}个链接节点,{data.Nodes.Sum(c => c.ChequePeers.Count) }个交互节点,{data.Nodes.Sum(c => c.SentChequeCount)}个发送支票,{ data.Nodes.Sum(c => c.ReceivedChequeCount)}个接收支票,接收金额{data.Nodes.Sum(c => c.ReceiveChequeAmount).ToString("N0")},待兑金额:{data.Nodes.Sum(c => c.TotalUncashedAmount).ToString("N0")}";
                          ;
                          this.rtbLog.AppendText($"休眠{data.SleepSeconds}秒" + Environment.NewLine);
                      }));
                      Thread.Sleep(data.SleepSeconds * 1000);
                  }
              }, cancellationToken, TaskCreationOptions.LongRunning).Start();
-            beeApi.LogAction = log => this.BeginInvoke(new Action(() =>
+            beeApi.LogAction = log => this.Invoke(new Action(() =>
             {
                 this.rtbLog.AppendText(log + Environment.NewLine);
                 this.rtbLog.ScrollToCaret();
