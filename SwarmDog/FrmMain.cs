@@ -27,6 +27,7 @@ namespace SwarmDog
         Data data = new Data();
         BeeApi beeApi = new BeeApi();
         bool autoCashout = true;
+        bool startMonitor = true;
         string dataFile = Path.Combine(Application.StartupPath, "data.json");
         CancellationToken cancellationToken = new CancellationToken();
 
@@ -44,29 +45,14 @@ namespace SwarmDog
                 {
                     try
                     {
-                        node.Peers = beeApi.GetPeers(node);
-                        node.Cheques = beeApi.GetCheques(node);
-                        node.Address = beeApi.GetAddresses(node);
-                        var balance = beeApi.GetBalance(node);
-                        node.TotalBalance = balance.totalBalance;
-                        node.AvailableBalance = balance.availableBalance;
-                        node.CashoutCheque = new List<BeeServiceModel.GetCashoutResponse>();
-                        foreach (var receivedPeer in node.Cheques.lastcheques.Where(c => c.lastreceived != null))
+                        if (!startMonitor)
                         {
-                            var cashoutCheque = beeApi.GetCashout(node, receivedPeer.peer);
-                            node.CashoutCheque.Add(cashoutCheque);
-                            if (autoCashout && cashoutCheque.uncashedAmount > 0)
-                            {
-                                var response = beeApi.Cashout(node, receivedPeer.peer);
-                                if (response.code == 200)
-                                {
-                                    node.Remark = "兑换成功";
-                                }
-                                else
-                                {
-                                    node.Remark = "兑换失败," + response.message;
-                                }
-                            }
+                            Thread.Sleep(1000);
+                        }
+                        else
+                        {
+                            GetBasicInfo(node);
+                            Cashout(node);
                         }
                     }
                     catch (Exception ex)
@@ -74,6 +60,52 @@ namespace SwarmDog
                         node.Remark = ex.Message;
                     }
                 }
+            }
+        }
+
+        private void Cashout(Node node)
+        {
+            try
+            {
+                node.Cheques = beeApi.GetCheques(node);
+                node.CashoutCheque = new List<BeeServiceModel.GetCashoutResponse>();
+                foreach (var receivedPeer in node.Cheques.lastcheques.Where(c => c.lastreceived != null))
+                {
+                    var cashoutCheque = beeApi.GetCashout(node, receivedPeer.peer);
+                    node.CashoutCheque.Add(cashoutCheque);
+                    if (autoCashout && cashoutCheque.uncashedAmount > 0)
+                    {
+                        var response = beeApi.Cashout(node, receivedPeer.peer);
+                        if (response.code == 200)
+                        {
+                            node.Remark = "兑换成功";
+                        }
+                        else
+                        {
+                            node.Remark = "兑换失败," + response.message;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                node.Remark = "兑换接口异常。" + ex.Message;
+            }
+        }
+
+        private void GetBasicInfo(Node node)
+        {
+            try
+            {
+                node.Peers = beeApi.GetPeers(node);
+                node.Address = beeApi.GetAddresses(node);
+                var balance = beeApi.GetBalance(node);
+                node.TotalBalance = balance.totalBalance;
+                node.AvailableBalance = balance.availableBalance;
+            }
+            catch (Exception ex)
+            {
+                node.Remark = "获取基础信息异常。" + ex.Message;
             }
         }
 
@@ -92,16 +124,23 @@ namespace SwarmDog
              {
                  while (!cancellationToken.IsCancellationRequested)
                  {
-                     IntervalAction();
-                     this.Invoke(new Action(() =>
+                     if (!startMonitor)
                      {
-                         this.bsNode.ResetBindings(false);
-                         this.tslSummary.Text =
-                         $"当前合计：{data.Nodes.Count}个bee节点,{data.Nodes.Sum(c => c.Peers.Count)}个链接节点,{data.Nodes.Sum(c => c.ChequePeers.Count) }个交互节点,{data.Nodes.Sum(c => c.SentChequeCount)}个发送支票,{ data.Nodes.Sum(c => c.ReceivedChequeCount)}个接收支票,接收金额{data.Nodes.Sum(c => c.ReceiveChequeAmount).ToString("N0")},待兑金额:{data.Nodes.Sum(c => c.TotalUncashedAmount).ToString("N0")}";
-                         ;
-                         this.rtbLog.AppendText($"休眠{data.SleepSeconds}秒" + Environment.NewLine);
-                     }));
-                     Thread.Sleep(data.SleepSeconds * 1000);
+                         Thread.Sleep(1000);
+                     }
+                     else
+                     {
+                         IntervalAction();
+                         this.Invoke(new Action(() =>
+                         {
+                             this.bsNode.ResetBindings(false);
+                             this.tslSummary.Text =
+                             $"当前合计：{data.Nodes.Count}个bee节点,{data.Nodes.Sum(c => c.Peers.Count)}个链接节点,{data.Nodes.Sum(c => c.ChequePeers.Count) }个交互节点,{data.Nodes.Sum(c => c.SentChequeCount)}个发送支票,{ data.Nodes.Sum(c => c.ReceivedChequeCount)}个接收支票,接收金额{data.Nodes.Sum(c => c.ReceiveChequeAmount).ToString("N0")},待兑金额:{data.Nodes.Sum(c => c.TotalUncashedAmount).ToString("N0")}";
+                             ;
+                             this.rtbLog.AppendText($"休眠{data.SleepSeconds}秒" + Environment.NewLine);
+                         }));
+                         Thread.Sleep(data.SleepSeconds * 1000);
+                     }
                  }
              }, cancellationToken, TaskCreationOptions.LongRunning).Start();
             beeApi.LogAction = log => this.Invoke(new Action(() =>
@@ -158,6 +197,12 @@ namespace SwarmDog
                 }
             }
 
+        }
+
+        private void tsbStart_Click(object sender, EventArgs e)
+        {
+            startMonitor = !startMonitor;
+            tsbStart.Text = startMonitor ? "停止监控" : "启动监控";
         }
     }
 }

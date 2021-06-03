@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
             this.exportDr = new System.Windows.Forms.SaveFileDialog();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -70,9 +70,6 @@
             this.chequesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.grid = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ipDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.portDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Address = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TotalBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AvailableBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -83,9 +80,13 @@
             this.ReceivedChequeCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReceiveChequeAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TotalUncashedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ipDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.portDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.remarkDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bsNode = new System.Windows.Forms.BindingSource(this.components);
-            this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.tsbStart = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -139,8 +140,10 @@
             this.tsbAddNode,
             this.tsbDeleteNode,
             this.tsbCopyNode,
+            this.tsbStart,
             this.tsbAutoCashout,
-            this.tsbExport});
+            this.tsbExport
+            });
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1066, 25);
@@ -184,7 +187,7 @@
             this.tsbAutoCashout.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAutoCashout.Name = "tsbAutoCashout";
             this.tsbAutoCashout.Size = new System.Drawing.Size(84, 22);
-            this.tsbAutoCashout.Text = "取消自动兑换";
+            this.tsbAutoCashout.Text = "停止自动兑换";
             this.tsbAutoCashout.Click += new System.EventHandler(this.tsbAutoCashout_Click);
             // 
             // tsbExport
@@ -402,29 +405,6 @@
             this.grid.Size = new System.Drawing.Size(1066, 390);
             this.grid.TabIndex = 6;
             // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            dataGridViewCellStyle1.NullValue = null;
-            this.nameDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.nameDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.nameDataGridViewTextBoxColumn.HeaderText = "节点名称";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            // 
-            // ipDataGridViewTextBoxColumn
-            // 
-            this.ipDataGridViewTextBoxColumn.DataPropertyName = "Ip";
-            this.ipDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.ipDataGridViewTextBoxColumn.HeaderText = "节点地址";
-            this.ipDataGridViewTextBoxColumn.Name = "ipDataGridViewTextBoxColumn";
-            // 
-            // portDataGridViewTextBoxColumn
-            // 
-            this.portDataGridViewTextBoxColumn.DataPropertyName = "Port";
-            this.portDataGridViewTextBoxColumn.FillWeight = 35F;
-            this.portDataGridViewTextBoxColumn.HeaderText = "端口号";
-            this.portDataGridViewTextBoxColumn.Name = "portDataGridViewTextBoxColumn";
-            // 
             // Address
             // 
             this.Address.DataPropertyName = "Ethereum";
@@ -435,16 +415,16 @@
             // TotalBalance
             // 
             this.TotalBalance.DataPropertyName = "TotalBalance";
-            dataGridViewCellStyle2.Format = "N0";
-            this.TotalBalance.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle31.Format = "N0";
+            this.TotalBalance.DefaultCellStyle = dataGridViewCellStyle31;
             this.TotalBalance.HeaderText = "合计余额";
             this.TotalBalance.Name = "TotalBalance";
             // 
             // AvailableBalance
             // 
             this.AvailableBalance.DataPropertyName = "AvailableBalance";
-            dataGridViewCellStyle3.Format = "N0";
-            this.AvailableBalance.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle32.Format = "N0";
+            this.AvailableBalance.DefaultCellStyle = dataGridViewCellStyle32;
             this.AvailableBalance.HeaderText = "可用余额";
             this.AvailableBalance.Name = "AvailableBalance";
             // 
@@ -475,9 +455,9 @@
             // SentChequeAmount
             // 
             this.SentChequeAmount.DataPropertyName = "SentChequeAmount";
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = null;
-            this.SentChequeAmount.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle33.Format = "N0";
+            dataGridViewCellStyle33.NullValue = null;
+            this.SentChequeAmount.DefaultCellStyle = dataGridViewCellStyle33;
             this.SentChequeAmount.FillWeight = 63.81359F;
             this.SentChequeAmount.HeaderText = "发送金额";
             this.SentChequeAmount.Name = "SentChequeAmount";
@@ -494,8 +474,8 @@
             // ReceiveChequeAmount
             // 
             this.ReceiveChequeAmount.DataPropertyName = "ReceiveChequeAmount";
-            dataGridViewCellStyle5.Format = "N0";
-            this.ReceiveChequeAmount.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle34.Format = "N0";
+            this.ReceiveChequeAmount.DefaultCellStyle = dataGridViewCellStyle34;
             this.ReceiveChequeAmount.FillWeight = 63.81359F;
             this.ReceiveChequeAmount.HeaderText = "接收金额";
             this.ReceiveChequeAmount.Name = "ReceiveChequeAmount";
@@ -504,11 +484,43 @@
             // TotalUncashedAmount
             // 
             this.TotalUncashedAmount.DataPropertyName = "TotalUncashedAmount";
-            dataGridViewCellStyle6.Format = "N0";
-            this.TotalUncashedAmount.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle35.Format = "N0";
+            this.TotalUncashedAmount.DefaultCellStyle = dataGridViewCellStyle35;
             this.TotalUncashedAmount.HeaderText = "待兑金额";
             this.TotalUncashedAmount.Name = "TotalUncashedAmount";
             this.TotalUncashedAmount.ReadOnly = true;
+            // 
+            // rtbLog
+            // 
+            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbLog.Location = new System.Drawing.Point(0, 0);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.Size = new System.Drawing.Size(1066, 163);
+            this.rtbLog.TabIndex = 0;
+            this.rtbLog.Text = "";
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            dataGridViewCellStyle36.NullValue = null;
+            this.nameDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle36;
+            this.nameDataGridViewTextBoxColumn.FillWeight = 50F;
+            this.nameDataGridViewTextBoxColumn.HeaderText = "节点名称";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            // 
+            // ipDataGridViewTextBoxColumn
+            // 
+            this.ipDataGridViewTextBoxColumn.DataPropertyName = "Ip";
+            this.ipDataGridViewTextBoxColumn.FillWeight = 50F;
+            this.ipDataGridViewTextBoxColumn.HeaderText = "节点地址";
+            this.ipDataGridViewTextBoxColumn.Name = "ipDataGridViewTextBoxColumn";
+            // 
+            // portDataGridViewTextBoxColumn
+            // 
+            this.portDataGridViewTextBoxColumn.DataPropertyName = "Port";
+            this.portDataGridViewTextBoxColumn.FillWeight = 35F;
+            this.portDataGridViewTextBoxColumn.HeaderText = "端口号";
+            this.portDataGridViewTextBoxColumn.Name = "portDataGridViewTextBoxColumn";
             // 
             // remarkDataGridViewTextBoxColumn
             // 
@@ -523,14 +535,15 @@
             this.bsNode.DataSource = typeof(SwarmDog.Node);
             this.bsNode.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
             // 
-            // rtbLog
+            // tsbStart
             // 
-            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.Location = new System.Drawing.Point(0, 0);
-            this.rtbLog.Name = "rtbLog";
-            this.rtbLog.Size = new System.Drawing.Size(1066, 163);
-            this.rtbLog.TabIndex = 0;
-            this.rtbLog.Text = "";
+            this.tsbStart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbStart.Image = ((System.Drawing.Image)(resources.GetObject("tsbStart.Image")));
+            this.tsbStart.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbStart.Name = "tsbStart";
+            this.tsbStart.Size = new System.Drawing.Size(60, 22);
+            this.tsbStart.Text = "停止监控";
+            this.tsbStart.Click += new System.EventHandler(this.tsbStart_Click);
             // 
             // FrmMain
             // 
@@ -609,6 +622,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn TotalUncashedAmount;
         private System.Windows.Forms.DataGridViewTextBoxColumn remarkDataGridViewTextBoxColumn;
         private System.Windows.Forms.RichTextBox rtbLog;
+        private System.Windows.Forms.ToolStripButton tsbStart;
     }
 }
 
