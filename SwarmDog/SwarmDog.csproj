@@ -71,9 +71,11 @@
   <ItemGroup>
     <Compile Include="BeeApi.cs" />
     <Compile Include="BeeServiceModel\BalanceReponse.cs" />
+    <Compile Include="BeeServiceModel\CashoutReponse.cs" />
     <Compile Include="BeeServiceModel\ChequeResponse.cs" />
     <Compile Include="BeeServiceModel\GetAddressesResponse.cs" />
     <Compile Include="BeeServiceModel\GetCashoutResponse.cs" />
+    <Compile Include="BeeServiceModel\GetSettlementResponse.cs" />
     <Compile Include="BeeServiceModel\ResponseModel.cs" />
     <Compile Include="Cashout.cs" />
     <Compile Include="Cheque.cs" />

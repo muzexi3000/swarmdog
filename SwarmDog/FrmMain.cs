@@ -33,6 +33,11 @@ namespace SwarmDog
 
         private void bindingSource1_CurrentChanged(object sender, EventArgs e)
         {
+            SaveData();
+        }
+
+        private void SaveData()
+        {
             File.WriteAllText(dataFile, JsonConvert.SerializeObject(data, Formatting.Indented));
         }
 
@@ -59,6 +64,7 @@ namespace SwarmDog
                     {
                         node.Remark = ex.Message;
                     }
+                    Thread.Sleep(1000);
                 }
             }
         }
@@ -76,22 +82,61 @@ namespace SwarmDog
                     if (autoCashout && cashoutCheque.uncashedAmount > 0)
                     {
                         var response = beeApi.Cashout(node, receivedPeer.peer);
-                        if (response.code == 200)
+                        if (response != null && !string.IsNullOrEmpty(response.transactionHash))
                         {
-                            node.Remark = "兑换成功";
+                            node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
                         }
                         else
                         {
-                            node.Remark = "兑换失败," + response.message;
+                            node.Remark = "兑换2失败";
                         }
                     }
+                    Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
             {
-                node.Remark = "兑换接口异常。" + ex.Message;
+                if (data.SkipError)
+                {
+                    Cashout2(node);
+                }
+                else
+                {
+                    node.Remark = "兑换接口异常。" + ex.Message;
+                }
             }
         }
+
+        private void Cashout2(Node node)
+        {
+            try
+            {
+                node.Settlements = beeApi.GetSettlements(node);
+                node.CashoutCheque = new List<BeeServiceModel.GetCashoutResponse>();
+                foreach (var receivedPeer in node.Settlements.settlements.Where(c => c.received > 0))
+                {
+                    if (autoCashout)
+                    {
+                        var response = beeApi.Cashout(node, receivedPeer.peer);
+                        if (response != null && !string.IsNullOrEmpty(response.transactionHash))
+                        {
+                            node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
+                        }
+                        else
+                        {
+                            node.Remark = "兑换2失败";
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                node.Remark = "兑换2接口异常。" + ex.Message;
+            }
+
+        }
+
 
         private void GetBasicInfo(Node node)
         {
@@ -119,6 +164,7 @@ namespace SwarmDog
                     data = dataInFile;
                 }
             }
+            BindConfig();
             this.bsNode.DataSource = data.Nodes;
             new Task(() =>
              {
@@ -148,6 +194,11 @@ namespace SwarmDog
                 this.rtbLog.AppendText(log + Environment.NewLine);
                 this.rtbLog.ScrollToCaret();
             }));
+        }
+
+        private void BindConfig()
+        {
+            tsbSkipErr.Text = data.SkipError ? "异常中断" : "异常忽略";
         }
 
         private void tsbCopyNode_Click(object sender, EventArgs e)
@@ -203,6 +254,13 @@ namespace SwarmDog
         {
             startMonitor = !startMonitor;
             tsbStart.Text = startMonitor ? "停止监控" : "启动监控";
+        }
+
+        private void tsbSkipErr_Click(object sender, EventArgs e)
+        {
+            data.SkipError = !data.SkipError;
+            BindConfig();
+            SaveData();
         }
     }
 }

@@ -73,6 +73,26 @@ namespace SwarmDog
             }
         }
 
+        public GetSettlementResponse GetSettlements(Node node)
+        {
+            try
+            {
+                node.Remark = "获取结算信息";
+                var url = $"http://{ node.Ip}:{node.Port}/settlements";
+                LogAction($"请求接口[获取结算信息]：{url}");
+                var data = webClient.DownloadString(url);
+                LogAction($"接口响应：{data}");
+                return JsonConvert.DeserializeObject<GetSettlementResponse>(data);
+            }
+            catch (Exception ex)
+            {
+                var err = $"[获取结算信息]接口异常{ex.Message}";
+                node.Remark = err;
+                LogAction(err);
+                throw ex;
+            }
+        }
+
         public BalanceReponse GetBalance(Node node)
         {
             try
@@ -112,7 +132,7 @@ namespace SwarmDog
             }
         }
 
-        public ResponseModel Cashout(Node node, string receivedPeer)
+        public CashoutReponse Cashout(Node node, string receivedPeer)
         {
             try
             {
@@ -121,7 +141,7 @@ namespace SwarmDog
                 LogAction($"POST接口[执行支票兑换]：{url}");
                 var data = webClient.UploadString(url, string.Empty);
                 LogAction($"接口响应：{data}");
-                return JsonConvert.DeserializeObject<ResponseModel>(data);
+                return JsonConvert.DeserializeObject<CashoutReponse>(data);
             }
             catch (Exception ex)
             {

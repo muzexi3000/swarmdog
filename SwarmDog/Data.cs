@@ -8,7 +8,10 @@ namespace SwarmDog
     public class Data
     {
         public int SleepSeconds { get; set; } = 10;
-        public List<int> ColumnWidth { get; set; } = new List<int>();
+        public bool SkipError { get; set; } = false;
+        public bool AutoCashout { get; set; } = true;
+
         public List<Node> Nodes { get; set; } = new List<Node>();
+
     }
 }

@@ -33,28 +33,44 @@ namespace SwarmDog
         /// 有交互的节点
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
-        public List<string> ChequePeers { get { return Cheques == null ? new List<string>() : Cheques.lastcheques.Select(c => c.peer).ToList(); } }
-        public int ChequePeersCount { get { return ChequePeers == null ? 0 : ChequePeers.Count; } }
+        public List<string> ChequePeers
+        {
+            get
+            {
+                return Cheques == null ? (Settlements == null ? new List<string>() : Settlements.settlements.Select(c => c.peer)).ToList() : Cheques.lastcheques.Select(c => c.peer).ToList();
+            }
+        }
+        public int ChequePeersCount { get { return ChequePeers == null ? (Settlements == null ? 0 : Settlements.settlements.Count()) : ChequePeers.Count; } }
         /// <summary>
         /// 发送节点
         /// </summary>
-        public int SentChequeCount { get { return Cheques == null ? 0 : Cheques.lastcheques.Where(c => c.lastsent != null).Count(); } }
+        public int SentChequeCount { get { return Cheques == null ? (Settlements == null ? 0 : Settlements.settlements.Count(c => c.sent > 0)) : Cheques.lastcheques.Where(c => c.lastsent != null).Count(); } }
         /// <summary>
         /// 发送金额
         /// </summary>
-        public long SentChequeAmount { get { return Cheques == null ? 0 : Cheques.lastcheques.Where(c => c.lastsent != null).Sum(c => c.lastsent.payout); } }
+        public long SentChequeAmount { get { return Cheques == null ? (Settlements == null ? 0 : Settlements.totalsent) : Cheques.lastcheques.Where(c => c.lastsent != null).Sum(c => c.lastsent.payout); } }
 
         /// <summary>
         ///  接收节点
         /// </summary>
-        public int ReceivedChequeCount { get { return Cheques == null ? 0 : Cheques.lastcheques.Where(c => c.lastreceived != null).Count(); } }
+        public int ReceivedChequeCount
+        {
+            get
+            {
+                return Cheques == null ? (Settlements == null ? 0 : Settlements.settlements.Count(c => c.received > 0)) : Cheques.lastcheques.Where(c => c.lastreceived != null).Count();
+            }
+        }
+        public int CashoutChequeCount { get; set; }
         /// <summary>
         /// 接收金额
         /// </summary>
-        public long ReceiveChequeAmount { get { return Cheques == null ? 0 : Cheques.lastcheques.Where(c => c.lastreceived != null).Sum(c => c.lastreceived.payout); } }
+        public long ReceiveChequeAmount { get { return Cheques == null ? (Settlements == null ? 0 : Settlements.totalreceived) : Cheques.lastcheques.Where(c => c.lastreceived != null).Sum(c => c.lastreceived.payout); } }
 
         [Newtonsoft.Json.JsonIgnore]
         public List<GetCashoutResponse> CashoutCheque { get; set; } = new List<GetCashoutResponse>();
         public long TotalUncashedAmount { get { return CashoutCheque == null ? 0 : CashoutCheque.Sum(c => c.uncashedAmount); } }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public GetSettlementResponse Settlements { get; set; }
     }
 }
