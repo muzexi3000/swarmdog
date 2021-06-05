@@ -72,5 +72,20 @@ namespace SwarmDog
 
         [Newtonsoft.Json.JsonIgnore]
         public GetSettlementResponse Settlements { get; set; }
+
+        /// <summary>
+        /// 兑换成功数量
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public int CashoutSuccessCount { get { return CashoutSuccess.Count; } }
+        [Newtonsoft.Json.JsonIgnore]
+        public HashSet<string> CashoutSuccess { get; set; } = new HashSet<string>();
+        /// <summary>
+        /// 兑换失败
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public int CashoutFailCount { get { return CashoutFail.Count; } }
+        [Newtonsoft.Json.JsonIgnore]
+        public HashSet<string> CashoutFail { get; set; } = new HashSet<string>();
     }
 }

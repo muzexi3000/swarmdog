@@ -81,15 +81,21 @@ namespace SwarmDog
                     node.CashoutCheque.Add(cashoutCheque);
                     if (autoCashout && cashoutCheque.uncashedAmount > 0)
                     {
-                        var response = beeApi.Cashout(node, receivedPeer.peer);
-                        if (response != null && !string.IsNullOrEmpty(response.transactionHash))
+                        TryExecute(() =>
                         {
-                            node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
-                        }
-                        else
-                        {
-                            node.Remark = "兑换2失败";
-                        }
+                            var response = beeApi.Cashout(node, receivedPeer.peer);
+                            if (response != null && !string.IsNullOrEmpty(response.transactionHash))
+                            {
+                                node.CashoutFail.Remove(receivedPeer.peer);
+                                node.CashoutSuccess.Add(receivedPeer.peer);
+                                node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
+                            }
+                            else
+                            {
+                                node.Remark = "兑换2失败";
+                                node.CashoutFail.Add(receivedPeer.peer);
+                            }
+                        }, ex => node.CashoutFail.Add(receivedPeer.peer));
                     }
                     Thread.Sleep(1000);
                 }
@@ -115,17 +121,24 @@ namespace SwarmDog
                 node.CashoutCheque = new List<BeeServiceModel.GetCashoutResponse>();
                 foreach (var receivedPeer in node.Settlements.settlements.Where(c => c.received > 0))
                 {
+                    node.CashoutFail.Add(receivedPeer.peer);
                     if (autoCashout)
                     {
-                        var response = beeApi.Cashout(node, receivedPeer.peer);
-                        if (response != null && !string.IsNullOrEmpty(response.transactionHash))
+                        TryExecute(() =>
                         {
-                            node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
-                        }
-                        else
-                        {
-                            node.Remark = "兑换2失败";
-                        }
+                            var response = beeApi.Cashout(node, receivedPeer.peer);
+                            if (response != null && !string.IsNullOrEmpty(response.transactionHash))
+                            {
+                                node.CashoutFail.Remove(receivedPeer.peer);
+                                node.CashoutSuccess.Add(receivedPeer.peer);
+                                node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
+                            }
+                            else
+                            {
+                                node.Remark = "兑换2失败";
+                                node.CashoutFail.Add(receivedPeer.peer);
+                            }
+                        }, ex => node.CashoutFail.Add(receivedPeer.peer));
                     }
                     Thread.Sleep(1000);
                 }
@@ -261,6 +274,24 @@ namespace SwarmDog
             data.SkipError = !data.SkipError;
             BindConfig();
             SaveData();
+        }
+
+        private void TryExecute(Action act, Action<Exception> handleError = null)
+        {
+            try
+            {
+                act();
+            }
+            catch (Exception ex)
+            {
+                handleError?.Invoke(ex);
+                this.Invoke(new Action(() =>
+                {
+                    this.rtbLog.AppendText(ex.Message + Environment.NewLine);
+                    this.rtbLog.ScrollToCaret();
+                }));
+
+            }
         }
     }
 }
