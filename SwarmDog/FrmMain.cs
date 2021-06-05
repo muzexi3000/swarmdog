@@ -86,17 +86,21 @@ namespace SwarmDog
                             var response = beeApi.Cashout(node, receivedPeer.peer);
                             if (response != null && !string.IsNullOrEmpty(response.transactionHash))
                             {
-                                node.CashoutFail.Remove(receivedPeer.peer);
-                                node.CashoutSuccess.Add(receivedPeer.peer);
-                                node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
+                                AddSuccessPeer(node, receivedPeer.peer);
+                                LogRemark(node, "兑换2成功,transactionHash：" + response.transactionHash);
                             }
                             else
                             {
-                                node.Remark = "兑换2失败";
-                                node.CashoutFail.Add(receivedPeer.peer);
+                                LogRemark(node, "兑换2失败");
+                                AddFailPeer(node, receivedPeer.peer);
                             }
-                        }, ex => node.CashoutFail.Add(receivedPeer.peer));
+                        }, ex => AddFailPeer(node, receivedPeer.peer));
                     }
+                    else if (cashoutCheque.uncashedAmount == 0)
+                    {
+                        AddSuccessPeer(node, receivedPeer.peer);
+                    }
+                    grid.InvalidateRow(data.Nodes.IndexOf(node));
                     Thread.Sleep(1000);
                 }
             }
@@ -108,7 +112,7 @@ namespace SwarmDog
                 }
                 else
                 {
-                    node.Remark = "兑换接口异常。" + ex.Message;
+                    LogRemark(node, "兑换接口异常。" + ex.Message);
                 }
             }
         }
@@ -129,25 +133,42 @@ namespace SwarmDog
                             var response = beeApi.Cashout(node, receivedPeer.peer);
                             if (response != null && !string.IsNullOrEmpty(response.transactionHash))
                             {
-                                node.CashoutFail.Remove(receivedPeer.peer);
-                                node.CashoutSuccess.Add(receivedPeer.peer);
-                                node.Remark = "兑换2成功,transactionHash：" + response.transactionHash;
+                                AddSuccessPeer(node, receivedPeer.peer);
+                                LogRemark(node, "兑换2成功,transactionHash：" + response.transactionHash);
                             }
                             else
                             {
-                                node.Remark = "兑换2失败";
-                                node.CashoutFail.Add(receivedPeer.peer);
+                                LogRemark(node, "兑换2失败");
+                                AddFailPeer(node, receivedPeer.peer);
                             }
-                        }, ex => node.CashoutFail.Add(receivedPeer.peer));
+                        }, ex => AddFailPeer(node, receivedPeer.peer));
                     }
+                    grid.InvalidateRow(data.Nodes.IndexOf(node));
                     Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
             {
-                node.Remark = "兑换2接口异常。" + ex.Message;
+                LogRemark(node, "兑换2接口异常。" + ex.Message);
             }
 
+        }
+
+        private void LogRemark(Node node, string remark)
+        {
+            node.Remark = remark;
+            grid.InvalidateCell(remarkDataGridViewTextBoxColumn.Index, data.Nodes.IndexOf(node));
+        }
+
+        private void AddSuccessPeer(Node node, string peer)
+        {
+            node.CashoutFail.Remove(peer);
+            node.CashoutSuccess.Add(peer);
+        }
+        private void AddFailPeer(Node node, string peer)
+        {
+            node.CashoutFail.Add(peer);
+            node.CashoutSuccess.Remove(peer);
         }
 
 
@@ -163,7 +184,7 @@ namespace SwarmDog
             }
             catch (Exception ex)
             {
-                node.Remark = "获取基础信息异常。" + ex.Message;
+                LogRemark(node, "获取基础信息异常。" + ex.Message);
             }
         }
 

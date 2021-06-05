@@ -87,5 +87,13 @@ namespace SwarmDog
         public int CashoutFailCount { get { return CashoutFail.Count; } }
         [Newtonsoft.Json.JsonIgnore]
         public HashSet<string> CashoutFail { get; set; } = new HashSet<string>();
+
+        public string FailedPeers
+        {
+            get
+            {
+                return string.Join(",", CashoutFail);
+            }
+        }
     }
 }
