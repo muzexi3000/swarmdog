@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.exportDr = new System.Windows.Forms.SaveFileDialog();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -48,6 +48,7 @@
             this.tsbStart = new System.Windows.Forms.ToolStripButton();
             this.tsbAutoCashout = new System.Windows.Forms.ToolStripButton();
             this.tsbExport = new System.Windows.Forms.ToolStripButton();
+            this.tsbSkipErr = new System.Windows.Forms.ToolStripButton();
             this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
@@ -71,12 +72,6 @@
             this.chequesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.grid = new System.Windows.Forms.DataGridView();
-            this.rtbLog = new System.Windows.Forms.RichTextBox();
-            this.tsbSkipErr = new System.Windows.Forms.ToolStripButton();
-            this.bsNode = new System.Windows.Forms.BindingSource(this.components);
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ipDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.portDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Address = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TotalBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AvailableBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -89,7 +84,15 @@
             this.TotalUncashedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CashoutSuccessCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CashoutFailCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.tsbImport = new System.Windows.Forms.ToolStripButton();
+            this.tsbClear = new System.Windows.Forms.ToolStripButton();
+            this.importDialog = new System.Windows.Forms.OpenFileDialog();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ipDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.portDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.remarkDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.bsNode = new System.Windows.Forms.BindingSource(this.components);
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -140,6 +143,8 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbImport,
+            this.tsbClear,
             this.tsbAddNode,
             this.tsbDeleteNode,
             this.tsbCopyNode,
@@ -212,6 +217,16 @@
             this.tsbExport.Size = new System.Drawing.Size(72, 22);
             this.tsbExport.Text = "导出EXCEL";
             this.tsbExport.Click += new System.EventHandler(this.tsbExport_Click);
+            // 
+            // tsbSkipErr
+            // 
+            this.tsbSkipErr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbSkipErr.Image = ((System.Drawing.Image)(resources.GetObject("tsbSkipErr.Image")));
+            this.tsbSkipErr.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSkipErr.Name = "tsbSkipErr";
+            this.tsbSkipErr.Size = new System.Drawing.Size(60, 22);
+            this.tsbSkipErr.Text = "异常忽略";
+            this.tsbSkipErr.Click += new System.EventHandler(this.tsbSkipErr_Click);
             // 
             // RightToolStripPanel
             // 
@@ -419,54 +434,7 @@
             this.grid.Name = "grid";
             this.grid.Size = new System.Drawing.Size(1066, 390);
             this.grid.TabIndex = 6;
-            // 
-            // rtbLog
-            // 
-            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.Location = new System.Drawing.Point(0, 0);
-            this.rtbLog.Name = "rtbLog";
-            this.rtbLog.Size = new System.Drawing.Size(1066, 163);
-            this.rtbLog.TabIndex = 0;
-            this.rtbLog.Text = "";
-            // 
-            // tsbSkipErr
-            // 
-            this.tsbSkipErr.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.tsbSkipErr.Image = ((System.Drawing.Image)(resources.GetObject("tsbSkipErr.Image")));
-            this.tsbSkipErr.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSkipErr.Name = "tsbSkipErr";
-            this.tsbSkipErr.Size = new System.Drawing.Size(60, 22);
-            this.tsbSkipErr.Text = "异常忽略";
-            this.tsbSkipErr.Click += new System.EventHandler(this.tsbSkipErr_Click);
-            // 
-            // bsNode
-            // 
-            this.bsNode.AllowNew = true;
-            this.bsNode.DataSource = typeof(SwarmDog.Node);
-            this.bsNode.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            dataGridViewCellStyle1.NullValue = null;
-            this.nameDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.nameDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.nameDataGridViewTextBoxColumn.HeaderText = "节点名称";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            // 
-            // ipDataGridViewTextBoxColumn
-            // 
-            this.ipDataGridViewTextBoxColumn.DataPropertyName = "Ip";
-            this.ipDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.ipDataGridViewTextBoxColumn.HeaderText = "节点地址";
-            this.ipDataGridViewTextBoxColumn.Name = "ipDataGridViewTextBoxColumn";
-            // 
-            // portDataGridViewTextBoxColumn
-            // 
-            this.portDataGridViewTextBoxColumn.DataPropertyName = "Port";
-            this.portDataGridViewTextBoxColumn.FillWeight = 35F;
-            this.portDataGridViewTextBoxColumn.HeaderText = "端口号";
-            this.portDataGridViewTextBoxColumn.Name = "portDataGridViewTextBoxColumn";
+            this.grid.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.grid_DataError);
             // 
             // Address
             // 
@@ -563,12 +531,70 @@
             this.CashoutSuccessCount.DataPropertyName = "CashoutSuccessCount";
             this.CashoutSuccessCount.HeaderText = "兑换成功";
             this.CashoutSuccessCount.Name = "CashoutSuccessCount";
+            this.CashoutSuccessCount.ReadOnly = true;
             // 
             // CashoutFailCount
             // 
             this.CashoutFailCount.DataPropertyName = "CashoutFailCount";
             this.CashoutFailCount.HeaderText = "兑换失败";
             this.CashoutFailCount.Name = "CashoutFailCount";
+            this.CashoutFailCount.ReadOnly = true;
+            // 
+            // rtbLog
+            // 
+            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbLog.Location = new System.Drawing.Point(0, 0);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.Size = new System.Drawing.Size(1066, 163);
+            this.rtbLog.TabIndex = 0;
+            this.rtbLog.Text = "";
+            // 
+            // tsbImport
+            // 
+            this.tsbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbImport.Image = ((System.Drawing.Image)(resources.GetObject("tsbImport.Image")));
+            this.tsbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbImport.Name = "tsbImport";
+            this.tsbImport.Size = new System.Drawing.Size(60, 22);
+            this.tsbImport.Text = "导入节点";
+            this.tsbImport.Click += new System.EventHandler(this.tsbImport_Click);
+            // 
+            // tsbClear
+            // 
+            this.tsbClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbClear.Image = ((System.Drawing.Image)(resources.GetObject("tsbClear.Image")));
+            this.tsbClear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbClear.Name = "tsbClear";
+            this.tsbClear.Size = new System.Drawing.Size(60, 22);
+            this.tsbClear.Text = "清空节点";
+            this.tsbClear.Click += new System.EventHandler(this.tsbClear_Click);
+            // 
+            // importDialog
+            // 
+            this.importDialog.FileName = "swarm.csv";
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            dataGridViewCellStyle1.NullValue = null;
+            this.nameDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.nameDataGridViewTextBoxColumn.FillWeight = 50F;
+            this.nameDataGridViewTextBoxColumn.HeaderText = "节点名称";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            // 
+            // ipDataGridViewTextBoxColumn
+            // 
+            this.ipDataGridViewTextBoxColumn.DataPropertyName = "Ip";
+            this.ipDataGridViewTextBoxColumn.FillWeight = 50F;
+            this.ipDataGridViewTextBoxColumn.HeaderText = "节点地址";
+            this.ipDataGridViewTextBoxColumn.Name = "ipDataGridViewTextBoxColumn";
+            // 
+            // portDataGridViewTextBoxColumn
+            // 
+            this.portDataGridViewTextBoxColumn.DataPropertyName = "Port";
+            this.portDataGridViewTextBoxColumn.FillWeight = 35F;
+            this.portDataGridViewTextBoxColumn.HeaderText = "端口号";
+            this.portDataGridViewTextBoxColumn.Name = "portDataGridViewTextBoxColumn";
             // 
             // remarkDataGridViewTextBoxColumn
             // 
@@ -576,6 +602,12 @@
             this.remarkDataGridViewTextBoxColumn.FillWeight = 127.6272F;
             this.remarkDataGridViewTextBoxColumn.HeaderText = "备注";
             this.remarkDataGridViewTextBoxColumn.Name = "remarkDataGridViewTextBoxColumn";
+            // 
+            // bsNode
+            // 
+            this.bsNode.AllowNew = true;
+            this.bsNode.DataSource = typeof(SwarmDog.Node);
+            this.bsNode.CurrentChanged += new System.EventHandler(this.bindingSource1_CurrentChanged);
             // 
             // FrmMain
             // 
@@ -658,6 +690,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn CashoutSuccessCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn CashoutFailCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn remarkDataGridViewTextBoxColumn;
+        private System.Windows.Forms.ToolStripButton tsbImport;
+        private System.Windows.Forms.ToolStripButton tsbClear;
+        private System.Windows.Forms.OpenFileDialog importDialog;
     }
 }
 

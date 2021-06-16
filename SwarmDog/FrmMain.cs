@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -313,6 +314,52 @@ namespace SwarmDog
                 }));
 
             }
+        }
+
+        private void tsbClear_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("确认清空所有节点吗?", "确认", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+            {
+                data.Nodes.Clear();
+                SaveData();
+                bsNode.ResetBindings(false);
+            }
+        }
+
+        private void tsbImport_Click(object sender, EventArgs e)
+        {
+            var file = importDialog.ShowDialog();
+            if (file == DialogResult.OK && importDialog.CheckFileExists)
+            {
+                using (var reader = new StreamReader(importDialog.FileName))
+                {
+                    using (var csv = new CsvReader(reader))
+                    {
+                        while (csv.Read())
+                        {
+                            TryExecute(() =>
+                            {
+                                var name = csv.GetField<string>(0);
+                                var ip = csv.GetField<string>(1);
+                                var port = csv.GetField<int>(2);
+                                data.Nodes.Add(new Node
+                                {
+                                    Name = name,
+                                    Ip = ip,
+                                    Port = port
+                                });
+                            });
+                        }
+                    }
+                }
+                SaveData();
+                bsNode.ResetBindings(false);
+            }
+        }
+
+        private void grid_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            e.Cancel = true;
         }
     }
 }
